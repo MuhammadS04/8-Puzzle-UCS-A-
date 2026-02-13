@@ -3,12 +3,10 @@ def main():
     ez_puzzle = (1,2,3,4,5,6,7,8,0)
 
     print(display(ez_puzzle))
-    print(find_blank(ez_puzzle))
+    #print(find_blank(ez_puzzle))
 
     for i in get_neighbors(ez_puzzle):
         print(display(i))
-
-
 
 
 
@@ -30,8 +28,27 @@ def get_neighbors(state):
     neighbors = []
     row, col, blank_index = find_blank(state)
 
+    #moving up
     if row > 0:
         new_blank = blank_index - 3
+        new_state = swap(state, blank_index, new_blank)
+        neighbors.append(new_state)
+    
+    #moving down
+    if row < 2:
+        new_blank = blank_index + 3
+        new_state = swap(state, blank_index, new_blank)
+        neighbors.append(new_state)
+        
+    #moving left
+    if col > 0:
+        new_blank = blank_index - 1
+        new_state = swap(state, blank_index, new_blank)
+        neighbors.append(new_state)
+
+    #moving right
+    if col < 2:
+        new_blank = blank_index + 1
         new_state = swap(state, blank_index, new_blank)
         neighbors.append(new_state)
 
