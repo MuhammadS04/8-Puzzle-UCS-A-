@@ -1,6 +1,6 @@
 
 def main():
-    currState = (1, 2, 3, 4, 0, 5, 7, 8, 6)
+    currState = (1, 0, 2, 4, 5, 3, 7, 8, 6)
     goal  = (1, 2, 3, 4, 5, 6, 7, 8, 0)
 
     display(currState)
@@ -10,6 +10,7 @@ def main():
         display(i)
     
     print(misplaced_tile_hueristic(currState,goal))
+    print(manhattan_distance(currState,goal))
 
 
 
@@ -17,9 +18,13 @@ def find_blank(state):
         #get the row and column of the blank tile
         row = state.index(0) // 3
         col = state.index(0) % 3
-        blank_index = state.index(0)
-        return (row,col, blank_index)
+        return (row,col)
 
+def find_position(state, tile):
+    index = state.index(tile)
+    row = index // 3
+    col = index % 3
+    return (row, col)
 
 def display(state) -> None:
     #this is for the 3x3 puzzle only right now
@@ -30,7 +35,9 @@ def display(state) -> None:
 
 def get_neighbors(state):
     neighbors = []
-    row, col, blank_index = find_blank(state)
+    row, col = find_blank(state)
+    blank_index = state.index(0)
+
 
     #moving up
     if row > 0:
@@ -70,6 +77,15 @@ def misplaced_tile_hueristic(state,goal):
             count += 1
     return count
 
+def manhattan_distance(state,goal):
+    distance = 0
+    for i in range(len(state)):
+        if state[i] != 0:
+            row, col = find_position(state, state[i])
+            goalRow, goalCol = find_position(goal, state[i])
+            distance += abs(goalRow - row) + abs(goalCol - col)
+    return distance
+    
 
 
 if __name__ == "__main__":
