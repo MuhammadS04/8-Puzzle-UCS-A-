@@ -1,12 +1,15 @@
 
 def main():
-    ez_puzzle = (1,2,3,4,5,6,7,8,0)
+    currState = (1, 2, 3, 4, 0, 5, 7, 8, 6)
+    goal  = (1, 2, 3, 4, 5, 6, 7, 8, 0)
 
-    print(display(ez_puzzle))
+    display(currState)
     #print(find_blank(ez_puzzle))
 
-    for i in get_neighbors(ez_puzzle):
-        print(display(i))
+    for i in get_neighbors(currState):
+        display(i)
+    
+    print(misplaced_tile_hueristic(currState,goal))
 
 
 
@@ -18,11 +21,12 @@ def find_blank(state):
         return (row,col, blank_index)
 
 
-def display(state):
+def display(state) -> None:
     #this is for the 3x3 puzzle only right now
     print(state[0:3])
     print(state[3:6])
     print(state[6:9])
+    print("\n")
 
 def get_neighbors(state):
     neighbors = []
@@ -51,7 +55,6 @@ def get_neighbors(state):
         new_blank = blank_index + 1
         new_state = swap(state, blank_index, new_blank)
         neighbors.append(new_state)
-
     return neighbors
 
 def swap(state, index1, index2):
@@ -59,6 +62,15 @@ def swap(state, index1, index2):
     temp[index1], temp[index2] = temp[index2], temp[index1]
 
     return tuple(temp)
+
+def misplaced_tile_hueristic(state,goal):
+    count = 0
+    for i in range(len(state)):
+        if state[i] != 0 and state[i] != goal[i]:
+            count += 1
+    return count
+
+
 
 if __name__ == "__main__":
     main()
