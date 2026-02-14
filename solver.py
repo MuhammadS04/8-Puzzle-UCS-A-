@@ -1,3 +1,7 @@
+# Resources used:
+# Lecture slides on Blind Search and Heuristic Search
+# Python heapq documentation: https://docs.python.org/3/library/heapq.html
+
 import heapq
 
 def main():
@@ -23,21 +27,21 @@ def main():
     alg = int(input("Enter 1 for Uniform Search Cost, 2 for A* with misplaced tile heuristic, 3 for A* with Manhattan distance heuristic: "))
 
     if alg == 1:
-        a_star_search(currState, goal, zero_heuristic)
+        general_search(currState, goal, zero_heuristic)
     elif alg == 2:
-        a_star_search(currState, goal, misplaced_tile)
+        general_search(currState, goal, misplaced_tile)
     elif alg == 3:
-        a_star_search(currState, goal, manhattan_distance)
+        general_search(currState, goal, manhattan_distance)
     else:
         print("Invalid input")
 
 
 
-def a_star_search(start, goal, heuristic):
+def general_search(start, goal, heuristic):
     #we want a priority queue that is (cost + heuristic, state, total cost))
     #initilaizing the priority queue and the visited set
-    frontier = []
-    heapq.heappush(frontier,(0 + heuristic(start,goal), start, 0))
+    nodes = []
+    heapq.heappush(nodes,(0 + heuristic(start,goal), start, 0))
 
     #will store what nodes or states we've seen already
     visited = set()
@@ -46,10 +50,18 @@ def a_star_search(start, goal, heuristic):
     parent_path = {}
     parent_path[start] = None
 
-    while (frontier):
-        #popping values from the frontier
-        currCost, state, totalCost = heapq.heappop(frontier)
+    #max queue
+    max_queue_size = 0
 
+    while (nodes):
+        #popping values from the frontier
+        currCost, state, totalCost = heapq.heappop(nodes)
+
+        h_value = heuristic(state, goal)
+        print(f"The best state to expand with g(n) = {totalCost} and h(n) = {h_value} is...")
+        display(state)
+
+        max_queue_size = max(len(nodes), max_queue_size)
         #if we've already seen it then continue
         if state in visited:
             continue
@@ -65,6 +77,7 @@ def a_star_search(start, goal, heuristic):
             print("Solution found:")
             print(f"Number of moves: {len(path) - 1}")
             print(f"Nodes expanded: {len(visited)}")
+            print(f"Max queue size: {max_queue_size}")
             print("\nSolution path:")
             for step_num, step_state in enumerate(path):
                 print(f"Step {step_num}:")
@@ -82,10 +95,7 @@ def a_star_search(start, goal, heuristic):
                     new_totalCost = totalCost + 1
                     heuristic_cost = heuristic(neighbor, goal)
                     priorityCost = new_totalCost + heuristic_cost
-                    heapq.heappush(frontier, (priorityCost, neighbor, new_totalCost))
-                    print("Current heuristic: ", heuristic_cost)
-                    print("Adding neighbor with cost: ", currCost + 1)
-                    display(neighbor)
+                    heapq.heappush(nodes, (priorityCost, neighbor, new_totalCost))
                     parent_path[neighbor] = state
         
     return None
